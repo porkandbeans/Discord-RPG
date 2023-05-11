@@ -48,7 +48,6 @@ async def on_message(message):
     sqlconnect.commit()
 
 
-    #arbitrary change
     if (message.content.startswith("!rpg")):
       if (message.content == "!rpg show"):
           await message.channel.send(str(inv.show_inventory(userid, username)))
