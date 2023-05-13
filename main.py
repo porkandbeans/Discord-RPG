@@ -25,7 +25,9 @@ dbcursor.execute("""CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(255),
   level INT,
   experience_points INT,
-  coins INT
+  coins INT,
+  weapon INT,
+  armor INT
 );""")
 sqlconnect.commit()
 
@@ -42,18 +44,30 @@ async def on_message(message):
     # create an entry in the database for a user if one does not already exist
     # if an entry already exists for a user, it throws a duplicate entry error (which is ignored)
     dbcursor.execute("""INSERT IGNORE INTO users 
-        (id, name, level, experience_points, coins)
+        (id, name, level, experience_points, coins, weapon, armor)
         VALUES 
-        (""" + str(userid) + ", \"" + username + "\", 1, 0, 0)""")
+        (""" + str(userid) + ", \"" + username + "\", 1, 0, 0, 0, 0)""")
     sqlconnect.commit()
 
 
     if (message.content.startswith("!rpg")):
-      if (message.content == "!rpg show"):
-          await message.channel.send(str(inv.show_inventory(userid, username)))
-          return
-      if (message.content == "!rpg give"):
-          inv.add_to_inventory(userid, '{"id":0,"quantity":1}')
+        if (message.content == "!rpg bag"):
+            await message.channel.send(str(inv.show_inventory(userid, username)))
+            return
+        if (message.content == "!rpg give"):
+            await message.channel.send(inv.surprise_mechanics(userid))
+            return
+        if (message.content == "!rpg status"):
+            await message.channel.send(inv.status(userid))
+            return
+        if (message.content == "!rpg givecoins"):
+            await message.channel.send(inv.add_coins(userid, 69))
+        if (message.content.startswith("!rpg equip ")):
+            await message.channel.send(inv.equip(userid, message.content[11:]))
+        if (message.content.startswith("!rpg unequip ")):
+            await message.channel.send(inv.unequip(userid, message.content[13:]))
+        if (message.content.startswith("!rpg sell ")):
+            await message.channel.send(inv.sell(userid, message.content[10:]))
     # print(str(userid))
 
 
