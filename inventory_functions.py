@@ -141,6 +141,7 @@ def status(userid):
 
         weapon = get_item_by_ID(result[2])
         armor = get_item_by_ID(result[3])
+        print("Status: " + str(result))
         status_msg = "**Level**: " + str(result[0]) + "\n**Coins**: " + str(result[1]) + "\n**Weapon**: " + weapon["name"] + " (dps: " + str(weapon["dps"]) + ")\n**Armor**: " + armor["name"] + " (defense: " + str(armor["armor"]) + ")\n**Experience Points**: " + str(result[4])
     except mysql.connector.Error as e:
         print(f"MySQL error: {e}")

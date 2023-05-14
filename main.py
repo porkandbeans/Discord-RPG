@@ -4,6 +4,7 @@ from discord.utils import get
 from dotenv import load_dotenv
 import mysql.connector
 import inventory_functions as inv
+import monsters as mons
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -49,7 +50,6 @@ async def on_message(message):
         (""" + str(userid) + ", \"" + username + "\", 1, 0, 0, 0, 0)""")
     sqlconnect.commit()
 
-
     if (message.content.startswith("!rpg")):
         if (message.content == "!rpg bag"):
             await message.channel.send(str(inv.show_inventory(userid, username)))
@@ -68,6 +68,10 @@ async def on_message(message):
             await message.channel.send(inv.unequip(userid, message.content[13:]))
         if (message.content.startswith("!rpg sell ")):
             await message.channel.send(inv.sell(userid, message.content[10:]))
+        if (message.content == "!rpg spawn"):
+            await message.channel.send(mons.spawn_monster(1))
+        if (message.content == "!rpg attack"):
+            await message.channel.send(mons.attack_monster(userid))
     # print(str(userid))
 
 

@@ -1,0 +1,29 @@
+{
+    "monsters": [{
+        "id": 0,
+        "name": "Nothing",
+        "description": "There is no monster.",
+        "dps": 0,
+        "loot-table": 0,
+        "HP": 0,
+        "level": 0
+    },
+    {
+        "id": 1,
+        "name": "Rat",
+        "description": "A regular sized rat.",
+        "dps": 1,
+        "loot-table": 1,
+        "HP": 4,
+        "level": 1
+    },
+    {
+        "id": 2,
+        "name": "Skeleton",
+        "description": "Spooky, and scary!",
+        "dps": 3,
+        "loot-table": 2,
+        "HP": 10,
+        "level": 2
+    }]
+}
