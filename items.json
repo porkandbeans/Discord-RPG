@@ -23,23 +23,23 @@
         },
         {
             "id": 2,
-            "name": "Iron Sword",
+            "name": "Wooden Sword",
             "value": 40,
             "is_armor": false,
             "is_weapon": true,
-            "description": "It's a sword made of iron. A little blunt, but still better than your fists.",
+            "description": "It's a sword made of wood. A little blunt, but still better than your fists.",
             "stackable": false,
-            "dps": 6
+            "dps": 4
         },
         {
             "id": 3,
-            "name": "Saronite Sword",
+            "name": "Iron Sword",
             "value": 500,
             "is_armor": false,
             "is_weapon": true,
-            "description": "Forged from the blood of a long-dead ancient god.",
+            "description": "Basic and reliable.",
             "stackable": false,
-            "dps": 20
+            "dps": 6
         },
         {
             "id": 4,

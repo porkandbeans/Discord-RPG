@@ -54,14 +54,14 @@ async def on_message(message):
         if (message.content == "!rpg bag"):
             await message.channel.send(str(inv.show_inventory(userid, username)))
             return
-        if (message.content == "!rpg give"):
-            await message.channel.send(inv.surprise_mechanics(userid))
+        # if (message.content == "!rpg give"):
+        #     await message.channel.send(inv.surprise_mechanics(userid))
             return
         if (message.content == "!rpg status"):
             await message.channel.send(inv.status(userid))
             return
-        if (message.content == "!rpg givecoins"):
-            await message.channel.send(inv.add_coins(userid, 69))
+        # if (message.content == "!rpg givecoins"):
+        #     await message.channel.send(inv.add_coins(userid, 69))
         if (message.content.startswith("!rpg equip ")):
             await message.channel.send(inv.equip(userid, message.content[11:]))
         if (message.content.startswith("!rpg unequip ")):
@@ -77,10 +77,15 @@ async def on_message(message):
                 await message.channel.send(result)
             elif type(result) is list:
                 await message.channel.send("Monster slain!")
-                for user in result:
-
+                for user in result[1]:
                     await message.channel.send("<@"+str(user)+">")
-                    await message.channel.send(inv.surprise_mechanics(user))
+                    #   dragon slayer role
+                    if result[0]["id"] == 4:
+                        role = discord.utils.get(message.guild.roles, id=1107217690013224990)
+                        await message.author.add_roles(role)
+                    for drop in range(0,result[0]["loot-table"]):
+                        await message.channel.send(inv.surprise_mechanics(user))
+                    await message.channel.send(inv.add_xp(userid, result[0]["XP"]))
 
     # print(str(userid))
 

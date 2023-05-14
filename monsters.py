@@ -95,5 +95,5 @@ def attack_monster(userid, weapon):
         returnstring += "\n" + monster["name"] + " has been slain!"
         dbcursor.execute("DELETE FROM monster WHERE id=" + str(result[0]))
         sqlconnect.commit()
-        return contributors
+        return [monster, contributors]
     return returnstring

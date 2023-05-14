@@ -261,3 +261,13 @@ def get_user_weapon(userid):
     result = dbcursor.fetchone()
     weapon = get_item_by_ID(result[0])
     return weapon
+
+def add_xp(userid, xp):
+    dbcursor.execute("SELECT experience_points FROM users WHERE id = " + str(userid))
+    result = dbcursor.fetchone()
+    userxp = result[0] + xp
+    sql = "UPDATE users SET experience_points = %s WHERE id = %s"
+    vals = (userxp, userid)
+    dbcursor.execute(sql, vals)
+    sqlconnect.commit()
+    return (str(xp) + " XP points rewarded")
