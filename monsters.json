@@ -25,5 +25,23 @@
         "loot-table": 2,
         "HP": 10,
         "level": 2
+    },
+    {
+        "id": 3,
+        "name": "Goblin",
+        "description": "Short, green, ugly and mean",
+        "dps": 5,
+        "loot-table": 2,
+        "HP": 20,
+        "level": 3
+    },
+    {
+        "id": 4,
+        "name": "Dragon",
+        "description": "holy fuck, a dragon",
+        "dps": 10,
+        "loot-table": 3,
+        "HP": 100,
+        "level": 20
     }]
 }

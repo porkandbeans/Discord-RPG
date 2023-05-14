@@ -69,9 +69,19 @@ async def on_message(message):
         if (message.content.startswith("!rpg sell ")):
             await message.channel.send(inv.sell(userid, message.content[10:]))
         if (message.content == "!rpg spawn"):
-            await message.channel.send(mons.spawn_monster(1))
+            await message.channel.send(mons.spawn_monster(0))
         if (message.content == "!rpg attack"):
-            await message.channel.send(mons.attack_monster(userid))
+            weapon = inv.get_user_weapon(userid)
+            result = mons.attack_monster(userid, weapon)
+            if type(result) is str:
+                await message.channel.send(result)
+            elif type(result) is list:
+                await message.channel.send("Monster slain!")
+                for user in result:
+
+                    await message.channel.send("<@"+str(user)+">")
+                    await message.channel.send(inv.surprise_mechanics(user))
+
     # print(str(userid))
 
 

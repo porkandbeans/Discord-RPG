@@ -44,7 +44,7 @@ def spawn_monster(monsterid):
         return "There is already a monster!"
     
     if monsterid == 0:
-        monsterid = random.randint(1, monstertable["monsters"].count())
+        monsterid = random.randint(1, len(monstertable["monsters"]) - 1)
         print("no number specified, " + str(monsterid) + " generated.")
     monster = get_monster_by_id(monsterid)
     
@@ -56,22 +56,44 @@ def spawn_monster(monsterid):
     
     return monster["name"]
 
-def attack_monster(userid):
+def attack_monster(userid, weapon):
     dbcursor.execute("SELECT * FROM monster;")
-    dbcursor.fetchall()
-    if (dbcursor.rowcount == 0):
+    result = dbcursor.fetchone()
+    if (result == None):
         return "There isn't a monster to attack."
     
-    dbcursor.execute("SELECT level, coins, weapon, armor, experience_points FROM users WHERE id=" + str(userid))
-    result = dbcursor.fetchone()
-    print("Result: " + str(result))
-    userweapon = get_user_weapon(result[2])
-    result = None
-    return "Hitting monster for " + str(userweapon["dps"])
+    print(str(result[0]))
+    monster = get_monster_by_id(result[1])
 
+    if result[3] == None:
+        contributors = []
+    else:
+        contributors = json.loads(result[3])
+    
+    if weapon == False:
+        weapon = {"dps": 1}
+    
+    monsterhp = result[2] - weapon["dps"]
 
-def get_user_weapon(id):
-    for i in items:
-        if i["id"] == id:
-            return i
-    return False
+    if userid not in contributors:
+        contributors.append(userid)
+
+    query = """
+        UPDATE monster
+        SET HP = %s, contributors = %s
+        WHERE id = %s
+    """
+
+    values = (monsterhp, json.dumps(contributors), result[0])
+
+    dbcursor.execute(query, values)
+    sqlconnect.commit()
+
+    returnstring = "Hitting " + monster["name"] + " for " + str(weapon["dps"]) + " - " + str(monster["name"]) + " has " + str(monsterhp) + " HP remaining."
+
+    if monsterhp <= 0:
+        returnstring += "\n" + monster["name"] + " has been slain!"
+        dbcursor.execute("DELETE FROM monster WHERE id=" + str(result[0]))
+        sqlconnect.commit()
+        return contributors
+    return returnstring
