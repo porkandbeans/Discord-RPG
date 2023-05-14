@@ -255,3 +255,9 @@ def sell(userid, item):
     remove_from_inventory(userid, itemobj["id"])
     add_coins(userid, itemobj["value"])
     return "Sold " + item + " for " + str(itemobj["value"]) + " coins."
+
+def get_user_weapon(userid):
+    dbcursor.execute("SELECT weapon FROM users WHERE id = " + str(userid))
+    result = dbcursor.fetchone()
+    weapon = get_item_by_ID(result[0])
+    return weapon
