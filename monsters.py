@@ -45,6 +45,10 @@ def spawn_monster(monsterid):
     
     if monsterid == 0:
         monsterid = random.randint(1, len(monstertable["monsters"]) - 1)
+        if monsterid == 4:
+            roll = random.randint(1, 10)
+            if roll != 1:
+                monsterid = 1
         print("no number specified, " + str(monsterid) + " generated.")
     monster = get_monster_by_id(monsterid)
     
@@ -54,15 +58,16 @@ def spawn_monster(monsterid):
             (""" + str(monster["id"]) + ", " + str(monster["HP"]) + ");")
     sqlconnect.commit()
     
-    return monster["name"]
+    return "A **" + monster["name"] + "** has appeared! " + monster["name"] + " has " + str(monster["HP"]) + " HP"
 
 def attack_monster(userid, weapon):
+    returnvals = {}
     dbcursor.execute("SELECT * FROM monster;")
     result = dbcursor.fetchone()
     if (result == None):
-        return "There isn't a monster to attack."
+        returnvals["status"] = "no monster"
+        return returnvals
     
-    print(str(result[0]))
     monster = get_monster_by_id(result[1])
 
     if result[3] == None:
@@ -83,17 +88,25 @@ def attack_monster(userid, weapon):
         SET HP = %s, contributors = %s
         WHERE id = %s
     """
-
     values = (monsterhp, json.dumps(contributors), result[0])
-
     dbcursor.execute(query, values)
     sqlconnect.commit()
-
+    
+    returnvals = {}
     returnstring = "Hitting " + monster["name"] + " for " + str(weapon["dps"]) + " - " + str(monster["name"]) + " has " + str(monsterhp) + " HP remaining."
-
+    returnvals["status"] = "fighting"
+    returnvals["monster"] = monster
+    
     if monsterhp <= 0:
         returnstring += "\n" + monster["name"] + " has been slain!"
         dbcursor.execute("DELETE FROM monster WHERE id=" + str(result[0]))
         sqlconnect.commit()
-        return [monster, contributors]
-    return returnstring
+        returnvals["contributors"] = contributors
+        returnvals["status"] = "finished"
+
+        return returnvals
+    
+    returnvals["string"] = returnstring
+    returnvals["damage"] = monster["dps"]
+
+    return returnvals

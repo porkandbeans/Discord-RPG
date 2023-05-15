@@ -46,6 +46,7 @@
             "name": "Leather armor",
             "value": 50,
             "is_armor": true,
+            "slot": "armor",
             "is_weapon": false,
             "description": "Provides some basic protection.",
             "stackable": false,
@@ -56,6 +57,7 @@
             "name": "Steel armor",
             "value": 200,
             "is_armor": true,
+            "slot": "armor",
             "is_weapon": false,
             "description": "Provides fairly decent protection.",
             "stackable": false,
@@ -66,10 +68,50 @@
             "name": "Saronite armor",
             "value": 400,
             "is_armor": true,
+            "slot": "armor",
             "is_weapon": false,
             "description": "Provides godly protection.",
             "stackable": false,
             "armor": 100
+        },
+        {
+            "id": 7,
+            "name": "Cheese wheel",
+            "value": 20,
+            "is_armor": false,
+            "is_weapon": false,
+            "description": "Big wheel of goat's cheese. Good for hoarding.",
+            "stackable": true,
+            "HP": 10
+        },
+        {
+            "id": 8,
+            "name": "Health Potion",
+            "value": 100,
+            "is_armor": false,
+            "is_weapon": false,
+            "description": "When consumed, fully restores HP to 100.",
+            "stackable": true,
+            "HP": 100
+        },
+        {
+            "id": 9,
+            "name": "Revival potion",
+            "value": 1000,
+            "is_armor": false,
+            "is_weapon": false,
+            "description": "Bring a player back to life (cannot use on yourself)",
+            "stackable": true
+        },
+        {
+            "id": 10,
+            "name": "Saronite helm",
+            "value": 500,
+            "is_armor": true,
+            "slot": "head",
+            "is_weapon": false,
+            "stackable": false,
+            "armor": 20
         },
         {
             "id": 69,

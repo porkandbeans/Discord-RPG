@@ -27,8 +27,9 @@ sqlconnect.commit()
 # return a JSON object representing the user's inventory
 def get_inventory(userid):
     ensure_exists(userid)
-    dbcursor.execute("select items from inventories where id=" + str(userid))
-    json_string = str(dbcursor.fetchall())[3:-4]
+    dbcursor.execute("SELECT items FROM inventories WHERE id = %s", (userid,))
+    result = dbcursor.fetchone()
+    json_string = result[0] if result is not None else "{}"
     inventory = json.loads(json_string)
     return inventory
 
@@ -53,13 +54,16 @@ def ensure_exists(userid):
 # returns the user's inventory row
 def show_inventory(userid, username):
     inventory = get_inventory(userid)
-
+    
     returnvalue = "Inventory for " + username + ": \n"
     if len(inventory["inventory"]) > 0:
         for item in inventory["inventory"]:
             for ivs in itemValues["items"]:
                 if item["id"] == ivs["id"]:
-                    returnvalue += "- " + ivs["name"] + "(" + str(item["quantity"]) + ")\n"
+                    if(item["quantity"] > 1):
+                        returnvalue += "> " + ivs["name"] + " (" + str(item["quantity"]) + ")\n"
+                    else:
+                        returnvalue += "> " + ivs["name"] + "\n"
     else:
         returnvalue += "nothing"
 
@@ -79,11 +83,16 @@ def add_to_inventory(userid, item):
     if "quantity" not in addthis:
         addthis["quantity"] = 1
     # check if the item is stackable
-    for ivs in itemValues["items"]:
-        if (addthis["id"] == ivs["id"]):
-            if not (ivs["stackable"] and search_inventory_for_item(inventory, addthis)):
-                inventory["inventory"].append(addthis)
-    
+    if addthis["stackable"]:
+        existingobject = search_inventory_for_item(inventory, addthis)
+        if existingobject != False:
+            addthis["quantity"] += existingobject["quantity"]
+            replace_item_in_inventory(inventory, addthis)
+        else:
+            inventory["inventory"].append(addthis)
+    else:
+        inventory["inventory"].append(addthis)
+
     # convert json into valid string data and store in database
     json_str = json.dumps(inventory)
     sql = "UPDATE inventories SET items = %s WHERE id = %s"
@@ -91,58 +100,83 @@ def add_to_inventory(userid, item):
     dbcursor.execute(sql, val)
     sqlconnect.commit()
 
-# stack items up if they already exist in the inventory or return false if not found
+def replace_item_in_inventory(inventory, item):
+    for i in inventory["inventory"]:
+        if item["id"] == i["id"]:
+            #user has this item in their inventory
+            inventory["inventory"].remove(i)
+            inventory["inventory"].append(item)
+            return
+    
+    return False
+
+# returns an item if it is found in the inventory or false if it is not.
 def search_inventory_for_item(inventory, item):
     for i in inventory["inventory"]:
         if item["id"] == i["id"]:
             #user has this item in their inventory
-            if "quantity" not in i:
-                i["quantity"] = 1
-            if "quantity" not in item:
-                item["quantity"] = 1
-            i["quantity"] += item["quantity"]
-            return True
+            return i
     
     return False
 
 def surprise_mechanics(userid):
     roll = random.randint(0,10)
     if roll == 0:
-        add_to_inventory(userid, json.loads('{"id":3,"quantity":1}'))
-        return "You found a **legendary** sword!"
+        subroll = random.randint(1,10)
+        if(subroll == 1):
+            add_to_inventory(userid, get_item_by_ID(6))
+            return "You found **saronite armor**"
+        if(subroll == 2):
+            add_to_inventory(userid, get_item_by_ID(10))
+            return "You found a **saronite helmet**"
+        else:
+            add_to_inventory(userid, get_item_by_ID(3))
+            return "You found an **iron sword!**"
     if roll <= 2:
         roll = random.randint(1,2)
         if roll < 2:
-            add_to_inventory(userid, json.loads('{"id":2,"quantity":1}'))
-            return "You found an iron sword"
+            add_to_inventory(userid, get_item_by_ID(2))
+            return "You found a wooden sword"
         else:
-            add_to_inventory(userid, json.loads('{"id":5,"quantity":1}'))
+            add_to_inventory(userid, get_item_by_ID(5))
             return "You found steel armor"
     if roll <= 5:
         coincount = random.randint(10,30)
         add_coins(userid, coincount)
         return "You found " + str(coincount) + " coins."
     if roll > 5:
-        if roll < 2:
-            add_to_inventory(userid, json.loads('{"id":1,"quantity":1}'))
-            return "You found a *shitty* sword. :poop:"
+        subroll = random.randint(1,2)
+        if subroll == 1:
+            if roll <= 7:
+                add_to_inventory(userid, get_item_by_ID(1))
+                return "You found a *shitty* sword. :poop:"
+            else:
+                add_to_inventory(userid, get_item_by_ID(4))
+                return "You found leather armor"
         else:
-            add_to_inventory(userid, json.loads('{"id":4,"quantity":1}'))
-            return "You found leather armor"
+            subroll = random.randint(7,9)
+            reward = get_item_by_ID(subroll)
+            add_to_inventory(userid, reward)
+            return "You found a " + reward["name"]
     
 
 #   returns a string detailing the user's current status (AI helped)
 def status(userid):
     try:
-        dbcursor.execute("SELECT level, coins, weapon, armor, experience_points FROM users WHERE id=" + str(userid))
+        dbcursor.execute("SELECT level, HP, coins, weapon, armor, head, experience_points FROM users WHERE id=" + str(userid))
         result = dbcursor.fetchone()
         if result is None:
             raise ValueError("Result is None")
 
-        weapon = get_item_by_ID(result[2])
-        armor = get_item_by_ID(result[3])
+        level = result[0]
+        HP = result[1]
+        coins = result[2]
+        weapon = get_item_by_ID(result[3])
+        armor = get_item_by_ID(result[4])
+        head = get_item_by_ID(result[5])
+        XP = result[6]
         print("Status: " + str(result))
-        status_msg = "**Level**: " + str(result[0]) + "\n**Coins**: " + str(result[1]) + "\n**Weapon**: " + weapon["name"] + " (dps: " + str(weapon["dps"]) + ")\n**Armor**: " + armor["name"] + " (defense: " + str(armor["armor"]) + ")\n**Experience Points**: " + str(result[4])
+        status_msg = "**Level**: " + str(level) + "\n**HP**: "+ str(HP) +"\n**Coins**: " + str(coins) + "\n**Weapon**: " + weapon["name"] + " (dps: " + str(weapon["dps"]) + ")\n**Armor**: " + armor["name"] + " (defense: " + str(armor["armor"]) + ")\n**Helm**: " + head["name"] + " (defense: " + str(head["armor"]) + ")\n**Experience Points**: " + str(result[5])
     except mysql.connector.Error as e:
         print(f"MySQL error: {e}")
         return "Error: Could not get user status"
@@ -189,11 +223,14 @@ def equip(userid, item):
                 sqlconnect.commit()
                 
             if i["is_armor"]:
-                dbcursor.execute("SELECT armor FROM users WHERE id=" + str(userid))
+                slot = i["slot"]
+                
+                dbcursor.execute("SELECT "+slot+" FROM users WHERE id=" + str(userid))
+
                 result = dbcursor.fetchone()
                 equippeditem = get_item_by_ID(result[0])
                 add_to_inventory(userid, equippeditem)
-                sql = "UPDATE users SET armor = %s WHERE id= %s"
+                sql = "UPDATE users SET "+slot+" = %s WHERE id= %s"
                 vals = (str(i["id"]), str(userid))
                 remove_from_inventory(userid, i["id"])
                 dbcursor.execute(sql, vals)
@@ -214,7 +251,12 @@ def remove_from_inventory(userid, itemid):
     
     for i in userinv["inventory"]:
         if itemid == i["id"]:
-            userinv["inventory"].remove(i)
+            if i["quantity"] == 1:
+                userinv["inventory"].remove(i)
+                print("removed stack")
+            elif i["quantity"] > 1:
+                i["quantity"] -= 1
+                print("removed 1 from stack")
             json_str = json.dumps(userinv)
             sql = "UPDATE inventories SET items = %s WHERE id = %s"
             val = (json_str, userid)
@@ -224,9 +266,6 @@ def remove_from_inventory(userid, itemid):
             return True
 
 def unequip(userid, type):
-    if type != "armor" and type != "weapon":
-        return "usage: !rpg unequip weapon, or !rpg unequip armor"
-    
     if type == "weapon":
         dbcursor.execute("SELECT weapon FROM users WHERE id=" + str(userid))
         result = dbcursor.fetchone()
@@ -236,16 +275,19 @@ def unequip(userid, type):
         sqlconnect.commit()
         return "Weapon unequipped, " + str(get_item_by_ID(result[0])["name"]) + " returned to inventory"
     
-    if type == "armor":
-        dbcursor.execute("SELECT armor FROM users WHERE id=" + str(userid))
+    if type == "armor" or type == "head":
+
+        dbcursor.execute("SELECT "+type+" FROM users WHERE id=" + str(userid))
         result = dbcursor.fetchone()
         
         equippeditem = get_item_by_ID(result[0])
         print(equippeditem)
         add_to_inventory(userid, equippeditem)
-        dbcursor.execute("UPDATE users SET armor = 0 WHERE id=" + str(userid))
+        dbcursor.execute("UPDATE users SET "+type+" = 0 WHERE id=" + str(userid))
         sqlconnect.commit()
         return "Armor unequipped, " + str(get_item_by_ID(result[0])["name"]) + " returned to inventory"
+    
+    return "usage: !rpg unequip weapon, or !rpg unequip armor"
 
 # sell an item from a user's inventory
 def sell(userid, item):
@@ -262,6 +304,17 @@ def get_user_weapon(userid):
     weapon = get_item_by_ID(result[0])
     return weapon
 
+def get_user_armor(userid):
+    dbcursor.execute("SELECT armor, head FROM users WHERE id = " + str(userid))
+    result = dbcursor.fetchone()
+    
+    armor = get_item_by_ID(result[0])
+    print(armor)
+    head = get_item_by_ID(result[1])
+    print(head)
+    retval = [armor, head]
+    return retval
+
 def add_xp(userid, xp):
     dbcursor.execute("SELECT experience_points FROM users WHERE id = " + str(userid))
     result = dbcursor.fetchone()
@@ -271,3 +324,65 @@ def add_xp(userid, xp):
     dbcursor.execute(sql, vals)
     sqlconnect.commit()
     return (str(xp) + " XP points rewarded")
+
+def check_player_alive(userid):
+    dbcursor.execute("SELECT HP FROM users WHERE id = " + str(userid))
+    result = dbcursor.fetchone()
+    userHP = result[0]
+    if userHP <= 0:
+        return False
+    return userHP
+
+def take_damage(userid, damage):
+
+    print("initial damage value: " + str(damage))
+    armors = get_user_armor(userid)
+    armor = armors[0]
+    head = armors[1]
+    defense = armor["armor"] + head["armor"]
+    mitigation = round(0.1 * defense)
+    onepercent = round(damage / 100)
+    subtractvalue = onepercent * mitigation
+    damage = damage - subtractvalue
+    print("processed damage value: " + str(damage))
+
+    dbcursor.execute("SELECT HP FROM users WHERE id = " + str(userid))
+    result = dbcursor.fetchone()
+    userHP = result[0]
+    userHP = userHP - damage
+    dbcursor.execute("UPDATE users SET HP = " + str(userHP) + " WHERE id = " + str(userid))
+    sqlconnect.commit()
+    returnvals = {}
+    returnvals["string"] = "You took " +str(damage)+" damage, you now have "+str(userHP)+" HP."
+    if userHP <= 0:
+        returnvals["string"] += "\nYou are dead. You must wait to be revived."
+    return returnvals
+
+def use_item(userid, itemname):
+    item = get_item_by_name(itemname)
+    returnvals = {}
+    if (item == False):
+        returnvals["string"] = "Item not found."
+        return returnvals
+    
+    inventory = get_inventory(userid)
+    if search_inventory_for_item(inventory, item) == False:
+        returnvals["string"] = "You don't have any of those."
+        return returnvals
+    
+    if("HP" in item):
+        remove_from_inventory(userid, item["id"])
+        healuser(userid, item["HP"])
+        returnvals["string"] = "Using the " + item["name"] + " healed you for " + str(item["HP"])
+        return returnvals
+    else:
+        returnvals["string"] = "This object cannot be used."
+        return returnvals
+    
+def healuser(userid, value):
+    dbcursor.execute("SELECT HP FROM users WHERE id = " + str(userid))
+    result = dbcursor.fetchone()
+    userHP = result[0]
+    userHP += value
+    dbcursor.execute("UPDATE users SET HP = " + str(userHP) + " WHERE id = " + str(userid))
+    sqlconnect.commit()
