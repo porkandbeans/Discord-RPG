@@ -35,7 +35,7 @@ async def on_message(message):
     if channel.id != COUNTING_CHANNEL:
         return
     
-    if message.author.id == 1105988701642821722:
+    if message.author.id == 1106463817669558344:
         return
 
     try:
