@@ -50,4 +50,6 @@ async def on_message(message):
         await message.channel.send("YA FUCKED IT UP! start over from 1.")
         dbcursor.execute("UPDATE counting SET number=1")
 
+    sqlconnect.commit()
+
 client.run(TOKEN)
