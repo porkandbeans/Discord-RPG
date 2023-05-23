@@ -5,7 +5,7 @@ from discord.utils import get
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv('COUNTING_TOKEN')
 DB_USER = 'rpgbot'
 DB_PASS = os.getenv('DB_PASSWORD')
 
