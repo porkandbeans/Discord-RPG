@@ -37,6 +37,10 @@ async def on_message(message):
     
     if message.author.id == 1106463817669558344:
         return
+    
+    # buttsbot
+    if message.author.id == 1111148610042732584:
+        return
 
     try:
         number = int(message.content)
