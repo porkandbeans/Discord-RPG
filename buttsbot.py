@@ -1,3 +1,5 @@
+# this bot randomly responds to someone's message and sends it back,
+# but replaces one word in the message with the word "butt"
 import os
 import discord
 import random
@@ -11,7 +13,7 @@ client = discord.Client(intents=discord.Intents.all())
 
 @client.event
 async def on_message(message):
-    if random.randint(0,10) != 1:
+    if random.randint(0,30) != 1:
         return
     
     word_list = message.content.split()
