@@ -20,7 +20,17 @@ dbcursor = sqlconnect.cursor()
 dbcursor.execute("create database if not exists counting;")
 dbcursor.execute("use counting;")
 dbcursor.execute("CREATE TABLE IF NOT EXISTS counting (id INT PRIMARY KEY, number BIGINT);")
-dbcursor.execute("INSERT INTO counting (id, number) VALUES (0, 1);")
+
+# execute a SELECT query to check if the row exists
+dbcursor.execute("SELECT * FROM counting WHERE id=0")
+row = dbcursor.fetchone()
+
+# if the row exists, print a message, otherwise print an error message
+if row is not None:
+    print("Existing row found, not inserting")
+else:
+    dbcursor.execute("INSERT INTO counting (id, number) VALUES (0, 1);")
+
 
 COUNTING_CHANNEL = 1051261584556699738
 
