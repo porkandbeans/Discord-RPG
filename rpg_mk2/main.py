@@ -1,5 +1,6 @@
 import os
 import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 import mysql.connector
 import inventory_functions as inv
@@ -28,11 +29,32 @@ dbcursor.execute("""CREATE TABLE IF NOT EXISTS users (
   coins INT,
   weapon INT,
   armor INT,
+  head INT,
   HP INT 
 );""")
 sqlconnect.commit()
 
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
 client = discord.Client(intents=discord.Intents.all())
+
+# show user's inventory
+@bot.command()
+async def inventory(ctx):
+    userid = ctx.author.id
+    username = ctx.author.name
+    await ctx.channel.send(inv.show_inventory(userid, username))
+
+# show user's status
+@bot.command()
+async def status(ctx):
+    userid = ctx.author.id
+    username = ctx.author.name
+    await ctx.channel.send(inv.status(userid))
+
+# print(bot.commands)
 
 @client.event
 async def on_message(message):
@@ -43,9 +65,9 @@ async def on_message(message):
     # create an entry in the database for a user if one does not already exist
     # if an entry already exists for a user, it throws a duplicate entry error (which is ignored)
     dbcursor.execute("""INSERT IGNORE INTO users 
-        (id, name, level, experience_points, coins, weapon, armor, HP)
+        (id, name, level, experience_points, coins, weapon, armor, head, HP)
         VALUES 
-        (""" + str(userid) + ", \"" + username + "\", 1, 0, 0, 0, 0, 100)""")
+        (""" + str(userid) + ", \"" + username + "\", 1, 0, 0, 0, 0, 0, 100)""")
     sqlconnect.commit()
     
     if random.randint(0,100) == 1:
@@ -55,4 +77,5 @@ async def on_message(message):
     inv.add_xp(userid, 10)
     return
 
+bot.run(TOKEN)
 client.run(TOKEN)
