@@ -71,7 +71,7 @@ async def on_message(message):
 
     # create an entry in the database for a user if one does not already exist
     # if an entry already exists for a user, it throws a duplicate entry error (which is ignored)
-    dbcursor.execute("""INSERT IGNORE INTO users 
+    dbcursor.execute("""INSERT INTO users 
         (id, name, level, experience_points, coins, weapon, armor, head, HP)
         VALUES 
         (""" + str(userid) + ", \"" + username + "\", 1, 0, 0, 0, 0, 0, 100)""")
