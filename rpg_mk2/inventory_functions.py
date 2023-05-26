@@ -120,45 +120,52 @@ def search_inventory_for_item(inventory, item):
     
     return False
 
+# drop a random item for specified userid
 def surprise_mechanics(userid):
-    roll = random.randint(0,10)
-    if roll == 0:
-        subroll = random.randint(1,10)
-        if(subroll == 1):
-            add_to_inventory(userid, get_item_by_ID(6))
-            return "You found **saronite armor**"
-        if(subroll == 2):
-            add_to_inventory(userid, get_item_by_ID(10))
-            return "You found a **saronite helmet**"
-        else:
-            add_to_inventory(userid, get_item_by_ID(3))
-            return "You found an **iron sword!**"
-    if roll <= 2:
-        roll = random.randint(1,2)
-        if roll < 2:
-            add_to_inventory(userid, get_item_by_ID(2))
-            return "You found a wooden sword"
-        else:
-            add_to_inventory(userid, get_item_by_ID(5))
-            return "You found steel armor"
-    if roll <= 5:
-        coincount = random.randint(10,30)
-        add_coins(userid, coincount)
-        return "You found " + str(coincount) + " coins."
-    if roll > 5:
-        subroll = random.randint(1,2)
-        if subroll == 1:
-            if roll <= 7:
-                add_to_inventory(userid, get_item_by_ID(1))
-                return "You found a *shitty* sword. :poop:"
-            else:
-                add_to_inventory(userid, get_item_by_ID(4))
-                return "You found leather armor"
-        else:
-            subroll = random.randint(7,9)
-            reward = get_item_by_ID(subroll)
-            add_to_inventory(userid, reward)
-            return "You found a " + reward["name"]
+    roll = random.randint(0, len(itemValues))
+    item = get_item_by_ID(roll)
+    add_to_inventory(userid, item)
+    return "You found: " + item["name"]
+    
+# def surprise_mechanics(userid):
+#     roll = random.randint(0,10)
+#     if roll == 0:
+#         subroll = random.randint(1,10)
+#         if(subroll == 1):
+#             add_to_inventory(userid, get_item_by_ID(6))
+#             return "You found **saronite armor**"
+#         if(subroll == 2):
+#             add_to_inventory(userid, get_item_by_ID(10))
+#             return "You found a **saronite helmet**"
+#         else:
+#             add_to_inventory(userid, get_item_by_ID(3))
+#             return "You found an **iron sword!**"
+#     if roll <= 2:
+#         roll = random.randint(1,2)
+#         if roll < 2:
+#             add_to_inventory(userid, get_item_by_ID(2))
+#             return "You found a wooden sword"
+#         else:
+#             add_to_inventory(userid, get_item_by_ID(5))
+#             return "You found steel armor"
+#     if roll <= 5:
+#         coincount = random.randint(10,30)
+#         add_coins(userid, coincount)
+#         return "You found " + str(coincount) + " coins."
+#     if roll > 5:
+#         subroll = random.randint(1,2)
+#         if subroll == 1:
+#             if roll <= 7:
+#                 add_to_inventory(userid, get_item_by_ID(1))
+#                 return "You found a *shitty* sword. :poop:"
+#             else:
+#                 add_to_inventory(userid, get_item_by_ID(4))
+#                 return "You found leather armor"
+#         else:
+#             subroll = random.randint(7,9)
+#             reward = get_item_by_ID(subroll)
+#             add_to_inventory(userid, reward)
+#             return "You found a " + reward["name"]
     
 
 #   returns a string detailing the user's current status (AI helped)

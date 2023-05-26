@@ -40,6 +40,8 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='$', intents=intents)
 client = discord.Client(intents=discord.Intents.all())
 
+RUBBISH = 183394842125008896
+
 # show user's inventory
 @bot.command()
 async def inventory(ctx):
@@ -51,10 +53,15 @@ async def inventory(ctx):
 @bot.command()
 async def status(ctx):
     userid = ctx.author.id
-    username = ctx.author.name
     await ctx.channel.send(inv.status(userid))
 
-# print(bot.commands)
+# debugging command to give an item to userid
+@bot.command()
+async def drop(ctx):
+    userid = ctx.author.id
+    if userid != RUBBISH:
+        return
+    await ctx.channel.send(inv.surprise_mechanics(userid))
 
 @client.event
 async def on_message(message):

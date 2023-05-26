@@ -4,119 +4,21 @@
             "id": 0,
             "name": "Nothing",
             "value": 0,
-            "is_armor": true,
-            "is_weapon": true,
             "description": "Nothing. No item. Unprotected. Valueless. An empty space. There is nothing here.",
-            "stackable": false,
-            "dps": 1,
-            "armor": 1
+            "stackable": false
         },
         {
             "id": 1,
-            "name": "Shitty Sword",
-            "value": 2,
-            "is_armor": false,
-            "is_weapon": true,
-            "description": "It's a sword made of shit. Maybe it has some use in psychological warfare?",
-            "stackable": false,
-            "dps": 2
+            "name": "Perfectly Generic Object",
+            "value": 0,
+            "description": "You've never seen an object more generic than this object.",
+            "stackable": false
         },
         {
             "id": 2,
-            "name": "Wooden Sword",
-            "value": 40,
-            "is_armor": false,
-            "is_weapon": true,
-            "description": "It's a sword made of wood. A little blunt, but still better than your fists.",
-            "stackable": false,
-            "dps": 4
-        },
-        {
-            "id": 3,
-            "name": "Iron Sword",
-            "value": 500,
-            "is_armor": false,
-            "is_weapon": true,
-            "description": "Basic and reliable.",
-            "stackable": false,
-            "dps": 6
-        },
-        {
-            "id": 4,
-            "name": "Leather armor",
-            "value": 50,
-            "is_armor": true,
-            "slot": "armor",
-            "is_weapon": false,
-            "description": "Provides some basic protection.",
-            "stackable": false,
-            "armor": 5
-        },
-        {
-            "id": 5,
-            "name": "Steel armor",
-            "value": 200,
-            "is_armor": true,
-            "slot": "armor",
-            "is_weapon": false,
-            "description": "Provides fairly decent protection.",
-            "stackable": false,
-            "armor": 20
-        },
-        {
-            "id": 6,
-            "name": "Saronite armor",
-            "value": 400,
-            "is_armor": true,
-            "slot": "armor",
-            "is_weapon": false,
-            "description": "Provides godly protection.",
-            "stackable": false,
-            "armor": 100
-        },
-        {
-            "id": 7,
-            "name": "Cheese wheel",
-            "value": 20,
-            "is_armor": false,
-            "is_weapon": false,
-            "description": "Big wheel of goat's cheese. Good for hoarding.",
-            "stackable": true,
-            "HP": 10
-        },
-        {
-            "id": 8,
-            "name": "Health Potion",
-            "value": 100,
-            "is_armor": false,
-            "is_weapon": false,
-            "description": "When consumed, fully restores HP to 100.",
-            "stackable": true,
-            "HP": 100
-        },
-        {
-            "id": 9,
-            "name": "Revival potion",
-            "value": 1000,
-            "is_armor": false,
-            "is_weapon": false,
-            "description": "Bring a player back to life (cannot use on yourself)",
-            "stackable": true
-        },
-        {
-            "id": 10,
-            "name": "Saronite helm",
-            "value": 500,
-            "is_armor": true,
-            "slot": "head",
-            "is_weapon": false,
-            "stackable": false,
-            "armor": 20
-        },
-        {
-            "id": 69,
-            "name": "Perfectly Generic Object",
+            "name": "Scrap Metal",
             "value": 0,
+            "description": "Metal scrap",
             "stackable": false
         }
     ]
