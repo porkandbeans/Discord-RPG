@@ -38,7 +38,6 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='$', intents=intents)
-client = discord.Client(intents=discord.Intents.all())
 
 RUBBISH = 183394842125008896
 
@@ -63,7 +62,7 @@ async def drop(ctx):
         return
     await ctx.channel.send(inv.surprise_mechanics(userid))
 
-@client.event
+@bot.event
 async def on_message(message):
     print(message.content)
     username = message.author.name
@@ -86,4 +85,3 @@ async def on_message(message):
     return
 
 bot.run(TOKEN)
-client.run(TOKEN)
