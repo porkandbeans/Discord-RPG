@@ -82,6 +82,10 @@ async def on_message(message):
         await message.channel.send(inv.surprise_mechanics(userid))
 
     inv.add_xp(userid, 10)
+
+    # process commands, thanks clyde
+    await bot.process_commands(message)
+
     return
 
 bot.run(TOKEN)
