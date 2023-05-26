@@ -122,7 +122,7 @@ def search_inventory_for_item(inventory, item):
 
 # drop a random item for specified userid
 def surprise_mechanics(userid):
-    roll = random.randint(0, len(itemValues))
+    roll = random.randint(1, len(itemValues["items"]))
     item = get_item_by_ID(roll)
     add_to_inventory(userid, item)
     return "You found: " + item["name"]
@@ -166,9 +166,8 @@ def surprise_mechanics(userid):
 #             reward = get_item_by_ID(subroll)
 #             add_to_inventory(userid, reward)
 #             return "You found a " + reward["name"]
-    
 
-#   returns a string detailing the user's current status (AI helped)
+#   returns a string detailing the user's current status
 def status(userid):
     try:
         dbcursor.execute("SELECT level, HP, coins, weapon, armor, head, experience_points FROM users WHERE id=" + str(userid))
@@ -184,7 +183,7 @@ def status(userid):
         head = get_item_by_ID(result[5])
         XP = result[6]
         print("Status: " + str(result))
-        status_msg = "**Level**: " + str(level) + "\n**HP**: "+ str(HP) +"\n**Coins**: " + str(coins) + "\n**Weapon**: " + weapon["name"] + " (dps: " + str(weapon["dps"]) + ")\n**Armor**: " + armor["name"] + " (defense: " + str(armor["armor"]) + ")\n**Helm**: " + head["name"] + " (defense: " + str(head["armor"]) + ")\n**Experience Points**: " + str(result[5])
+        status_msg = "**Level**: " + str(level) + "\n**HP**: "+ str(HP) +"\n**Coins**: " + str(coins) + "\n**Weapon**: " + weapon["name"] + "\n**Armor**: " + armor["name"] + "\n**Helm**: " + head["name"] + "\n**Experience Points**: " + str(result[5])
     except mysql.connector.Error as e:
         print(f"MySQL error: {e}")
         return "Error: Could not get user status"
