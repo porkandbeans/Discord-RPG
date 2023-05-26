@@ -65,6 +65,7 @@ async def drop(ctx):
 
 @client.event
 async def on_message(message):
+    print(message.content)
     username = message.author.name
     userid = message.author.id
     messagecontent = message.content.lower()
