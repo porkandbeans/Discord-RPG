@@ -53,6 +53,10 @@ async def on_message(message):
     # buttsbot
     if message.author.id == 1111148610042732584:
         return
+    
+    # RPGbot
+    if message.author.id == 1105988701642821722:
+        return
 
     words = message.content.split()
     
