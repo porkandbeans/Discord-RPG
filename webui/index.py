@@ -1,6 +1,5 @@
 import os
 from flask import Flask, render_template
-from PIL import Image
 app = Flask(__name__)
 
 imagedir = "D:\Projects\Discord-RPG\webui\static\images"
