@@ -1,8 +1,13 @@
 import os
 from flask import Flask, render_template
 app = Flask(__name__)
+from dotenv import load_dotenv
 
-imagedir = "D:\Projects\Discord-RPG\webui\static\images"
+#imagedir = "D:\Projects\Discord-RPG\webui\static\images"
+
+load_dotenv()
+imagedir = os.getenv('IMAGE_DIR')
+
 file_list = [f for f in os.listdir(imagedir) if f.endswith('.jpeg')]
 
 @app.route("/")
