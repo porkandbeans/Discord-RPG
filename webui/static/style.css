@@ -29,3 +29,9 @@ nav {
   nav li a:hover {
     background-color: #111;
   }
+
+  img {
+    max-width: 500px;
+    max-height: 500px;
+    object-fit: cover;
+  }

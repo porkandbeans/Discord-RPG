@@ -3,5 +3,10 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-  <h1>This is the index</h1>
+  <h1>Images</h1>
+  <div class="gallery">
+    {% for image in images %}
+      <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ image }}">
+    {% endfor %}
+  </div>
 {% endblock %}
