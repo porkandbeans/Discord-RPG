@@ -13,7 +13,7 @@ client = discord.Client(intents=discord.Intents.all())
 
 @client.event
 async def on_message(message):
-    if random.randint(0,30) != 1:
+    if random.randint(0,60) != 1:
         return
     
     word_list = message.content.split()
