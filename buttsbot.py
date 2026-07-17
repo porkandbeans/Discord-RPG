@@ -54,6 +54,7 @@ async def on_message(message):
             return
 
     word_list = message.content.split()
+    word_list.remove("@1111148610042732584")
 
     # Get the part-of-speech tag for every word
     tagged_words = nltk.pos_tag(word_list)
