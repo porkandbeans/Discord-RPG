@@ -53,8 +53,8 @@ async def on_message(message):
         if random.randint(0, 60) != 1:
             return
 
-    word_list = message.content.split()
-    word_list.remove("@1111148610042732584")
+    word_list = message.content.split() # split the discord message into a usable array
+    word_list.remove("@1111148610042732584") # so buttsbot does not tag itself
 
     # Get the part-of-speech tag for every word
     tagged_words = nltk.pos_tag(word_list)
