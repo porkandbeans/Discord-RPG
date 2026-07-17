@@ -38,7 +38,7 @@ load_dotenv()
 TOKEN = os.getenv("BUTTSBOT_TOKEN")
 
 # Download the tagger once (only needed the first time)
-nltk.download("averaged_perceptron_tagger")
+nltk.download("averaged_perceptron_tagger_eng")
 
 client = discord.Client(intents=discord.Intents.all())
 
