@@ -54,7 +54,9 @@ async def on_message(message):
             return
 
     word_list = message.content.split() # split the discord message into a usable array
-    word_list.remove("@1111148610042732584") # so buttsbot does not tag itself
+    word_list = [word for word in word_list if word != "@1111148610042732584"] # I don't know anymore
+    # if "@1111148610042732584" in message.content:
+    #     word_list.remove("@1111148610042732584") # so buttsbot does not tag itself
 
     # Get the part-of-speech tag for every word
     tagged_words = nltk.pos_tag(word_list)
